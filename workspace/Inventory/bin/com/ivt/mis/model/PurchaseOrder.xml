@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap>
+	<typeAlias type="com.ivt.mis.model.PurchaseOrder" alias="purchaseOrder" />
+	<resultMap id="purchaseOrderMap" class="purchaseOrder">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="oppsiteId" property="oppsiteId" jdbcType="VARCHAR" />
+		<result column="orderType" property="orderType" jdbcType="VARCHAR" />
+		<result column="providerId" property="providerId" jdbcType="VARCHAR" />
+		<result column="providerName" property="providerName" jdbcType="VARCHAR" />
+		<result column="available" property="available" jdbcType="Integer" />
+		<result column="exchangeRate" property="exchangeRate" jdbcType="Double" />
+		<result column="totalAmount" property="totalAmount" jdbcType="Double" />
+		<result column="depositeRate" property="depositeRate" jdbcType="Double" />
+		<result column="invoiceType" property="invoiceType" jdbcType="VARCHAR" />
+		<result column="invoiceRate" property="invoiceRate" jdbcType="Double" />
+		<result column="contact" property="contact" jdbcType="VARCHAR" />
+		<result column="telephone" property="telephone" jdbcType="VARCHAR" />
+		<result column="fax" property="fax" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="ownerCompanyName" property="ownerCompanyName"
+			jdbcType="VARCHAR" />
+		<result column="ownerDeptName" property="ownerDeptName"
+			jdbcType="VARCHAR" />
+		<result column="ownerSaleMan" property="ownerSaleMan" jdbcType="VARCHAR" />
+		<result column="ownerSignedDate" property="ownerSignedDate"
+			jdbcType="VARCHAR" />
+		<result column="transportType" property="transportType"
+			jdbcType="VARCHAR" />
+		<result column="transportCost" property="transportCost"
+			jdbcType="Double" />
+		<result column="otherCost" property="otherCost" jdbcType="Double" />
+		<result column="discount" property="discount" jdbcType="Double" />
+		<result column="deliveryDays" property="deliveryDays" jdbcType="Integer" />
+		<result column="maxDelayDate" property="maxDelayDate" jdbcType="VARCHAR" />
+		<result column="payDate" property="payDate" jdbcType="VARCHAR" />
+		<result column="currency" property="currency" jdbcType="VARCHAR" />
+		<result column="comments" property="comments" jdbcType="VARCHAR" />
+		<result column="createPerson" property="createPerson" jdbcType="VARCHAR" />
+		<result column="createTime" property="createTime" jdbcType="VARCHAR" />
+		<result column="updatePerson" property="updatePerson" jdbcType="VARCHAR" />
+		<result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="Integer" />
+	</resultMap>
+
+	<insert id="addPurchaseOrder" parameterClass="purchaseOrder">
+		insert into
+		ivt_purchase_order(id,oppsiteId,orderType,providerId,providerName,available,exchangeRate,totalAmount,depositeRate,invoiceType,invoiceRate,
+		contact,telephone,fax,email,ownerCompanyName,ownerDeptName,ownerSaleMan,ownerSignedDate,transportType,transportCost,otherCost,discount,
+		deliveryDays,maxDelayDate,payDate,currency,comments,createPerson,createTime,version)
+		values
+		(#id#,#oppsiteId#,#orderType#,#providerId#,#providerName#,#available#,#exchangeRate#,#totalAmount#,#depositeRate#,#invoiceType#,#invoiceRate#,
+		#contact#,#telephone#,#fax#,#email#,#ownerCompanyName#,#ownerDeptName#,#ownerSaleMan#,#ownerSignedDate#,#transportType#,#transportCost#,
+		#otherCost#,#discount#,#deliveryDays#,#maxDelayDate#,#payDate#,#currency#,#comments#,#createPerson#,#createTime#,1)
+	</insert>
+	<update id="updatePurchaseOrder" parameterClass="purchaseOrder">
+		update
+		ivt_purchase_order set
+		oppsiteId=#oppsiteId#,orderType=#orderType#,providerId=#providerId#,providerName=#providerName#,available=#available#,exchangeRate=#exchangeRate#,
+		totalAmount=#totalAmount#,depositeRate=#depositeRate#,invoiceType=#invoiceType#,invoiceRate=#invoiceRate#,contact=#contact#,telephone=#telephone#,
+		fax=#fax#,email=#email#,ownerCompanyName=#ownerCompanyName#,ownerDeptName=#ownerDeptName#,ownerSaleMan=#ownerSaleMan#,ownerSignedDate=#ownerSignedDate#,
+		transportType=#transportType#,transportCost=#transportCost#,otherCost=#otherCost#,discount=#discount#,deliveryDays=#deliveryDays#,
+		maxDelayDate=#maxDelayDate#,payDate=#payDate#,currency=#currency#,comments=#comments#,updatePerson=#updatePerson#,updateTime=#updateTime#,version=version+1
+		where id=#id#
+	</update>
+	<update id="deletePurchaseOrderById">
+		update ivt_purchase_order set
+		available=0,version=version+1 where id=#value#
+	</update>
+	<select id="searchAllPurchaseOrders" resultMap="purchaseOrderMap">
+		select * from
+		ivt_purchase_order where available!=0
+	</select>
+
+	<select id="searchPurchaseOrderByProperties" resultMap="purchaseOrderMap"
+		parameterClass="purchaseOrder">
+		select * from ivt_purchase_order
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="providerName">
+				(upper(providerName)
+				like
+				upper('%$providerName$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="orderType">
+				(upper(orderType) like
+				upper('%$orderType$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="id">
+				(upper(id) like
+				upper('%$id$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="available">
+				(available!=0)
+			</isNotEmpty>
+		</dynamic>
+		order by createTime desc
+		limit #page.fromIndex#,#page.pageSize#
+	</select>
+	<select id="searchPurchaseOrderByPropertiesCount" resultClass="java.lang.Integer"
+		parameterClass="purchaseOrder">
+		select count(*) from ivt_purchase_order
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="providerName">
+				(upper(providerName)
+				like
+				upper('%$providerName$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="orderType">
+				(upper(orderType) like
+				upper('%$orderType$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="id">
+				(upper(id) like
+				upper('%$id$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="available">
+				(available!=0)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="findPurchaseOrderById" resultMap="purchaseOrderMap">
+		select * from
+		ivt_purchase_order where available!=0 and id=#value#
+	</select>
+	<select id="countPurchaseOrderById" resultClass="java.lang.Integer">
+		select count(*) from ivt_purchase_order where upper(id)=upper(#value#)
+	</select>
+</sqlMap>

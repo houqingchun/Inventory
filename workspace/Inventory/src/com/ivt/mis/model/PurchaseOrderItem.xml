@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap>
+	<typeAlias type="com.ivt.mis.model.PurchaseOrderItem" alias="purchaseOrderItem" />
+	<resultMap id="purchaseOrderItemMap" class="purchaseOrderItem">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="purchaseOrderId" property="purchaseOrderId" jdbcType="VARCHAR" />
+		<result column="productId" property="productId" jdbcType="VARCHAR" />
+		<result column="buyNbr" property="buyNbr" jdbcType="Integer" />
+		<result column="unit" property="unit" jdbcType="VARCHAR" />
+		<result column="unitPrice" property="unitPrice" jdbcType="Double" />
+		<result column="totalAmount" property="totalAmount" jdbcType="Double" />
+		<result column="deliveryDays" property="deliveryDays" jdbcType="Integer" />
+		<result column="comments" property="comments" jdbcType="Double" />
+		<result column="version" property="version" jdbcType="Integer" />
+	</resultMap>
+
+	<insert id="addPurchaseOrderItem" parameterClass="purchaseOrderItem">
+		insert into
+		ivt_purchase_order_item(id,purchaseOrderId,productId,buyNbr,unit,unitPrice,totalAmount,deliveryDays,comments,version)
+		values
+		(#id#,#purchaseOrderId#,#productId#,#buyNbr#,#unit#,#unitPrice#,#totalAmount#,#deliveryDays#,#comments#,1)
+	</insert>
+	<update id="updatePurchaseOrderItem" parameterClass="purchaseOrderItem">
+		update
+		ivt_purchase_order_item set
+		purchaseOrderId=#purchaseOrderId#,productId=#productId#,buyNbr=#buyNbr#,unit=#unit#,unitPrice=#unitPrice#,totalAmount=#totalAmount#,deliveryDays=#deliveryDays#,comments=#comments#,version=version+1
+		where id=#id#
+	</update>	
+	
+	<select id="findPurchaseOrderItemByOrderId" resultMap="purchaseOrderItemMap">
+		select * from
+		ivt_purchase_order_item where purchaseOrderId=#value#
+	</select>
+</sqlMap>

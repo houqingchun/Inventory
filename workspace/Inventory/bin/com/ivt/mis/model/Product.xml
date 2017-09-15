@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap>
+	<typeAlias type="com.ivt.mis.model.Product" alias="product" />
+	<resultMap id="productCodeMap" class="product">
+		<result column="productCode" property="productCode" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="productMap" class="product">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="productCode" property="productCode" jdbcType="VARCHAR" />
+		<result column="productname" property="productName" jdbcType="VARCHAR" />
+		<result column="manufacturer" property="manufacturer" jdbcType="VARCHAR" />
+		<result column="promitCode" property="promitCode" jdbcType="VARCHAR" />
+		<result column="size" property="size" jdbcType="VARCHAR" />
+		<result column="unit" property="unit" jdbcType="VARCHAR" />
+		<result column="pack" property="pack" jdbcType="VARCHAR" />
+		<result column="miniPack" property="miniPack" jdbcType="VARCHAR" />
+		<result column="category" property="category" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="brand" property="brand" jdbcType="VARCHAR" />
+		<result column="available" property="available" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="Integer" />
+		<result column="ownerId" property="ownerId" jdbcType="VARCHAR" />
+		<result column="createTime" property="createTime" jdbcType="VARCHAR" />
+	</resultMap>
+	<insert id="addProduct" parameterClass="product">
+		insert into
+		ivt_product(id,productCode,productname,manufacturer,size,unit,pack,miniPack,category,promitcode,description,brand,ownerid,available,version,createTime)
+		values
+		(#id#,#productCode#,#productName#,#manufacturer#,#size#,#unit#,#pack#,#miniPack#,#category#,#promitCode#,#description#,#brand#,#ownerId#,1,1,#createTime#)
+	</insert>
+	<update id="updateProduct" parameterClass="product">
+		update ivt_product set version=version+1,productname=#productName#,
+		manufacturer=#manufacturer#,size=#size#,unit=#unit#,pack=#pack#,miniPack=#miniPack#,category=#category#,
+		promitcode=#promitCode#,description=#description#,brand=#brand#,productCode=#productCode#,ownerid=#ownerId#
+		where id=#id#
+	</update>
+	<update id="deleteProductById">
+		update ivt_product set available=0,version=version+1 where id=#value#
+	</update>
+	<select id="searchAllProducts" resultMap="productMap">
+		select * from ivt_product where available!=0
+	</select>
+	<select id="searchAllProductCodes" resultMap="productCodeMap">
+		select productCode from ivt_product where available!=0
+	</select>
+	<select id="searchProductsByProperties" resultMap="productMap"
+		parameterClass="product">
+		select * from ivt_product
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="id">
+				(upper(id) like upper('%$id$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="productCode">
+				(upper(productCode) like upper('%$productCode$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="brand">
+				(upper(brand) like upper('%$brand$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="manufacturer">
+				(upper(manufacturer) like upper('%$manufacturer$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="available">
+				(available!=0)
+			</isNotEmpty>
+		</dynamic>
+		order by createTime desc
+		limit #page.fromIndex#,#page.pageSize#
+	</select>
+	<select id="searchProductsByPropertiesCount" resultClass="java.lang.Integer"
+		parameterClass="product">
+		select count(*) from ivt_product
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="productName">
+				(upper(productName) like upper('%$productName$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="productCode">
+				(upper(productCode) like upper('%$productCode$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="available">
+				(available!=0)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="findProductById" resultMap="productMap">
+		select * from ivt_product where id=#value#
+	</select>
+</sqlMap>

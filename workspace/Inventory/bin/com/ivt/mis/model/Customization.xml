@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+ <sqlMap >
+   <typeAlias type="com.ivt.mis.model.Customization" alias="customization"/>
+   <resultMap id="customizationMap" class="customization" >
+     <result column="id" property="id" jdbcType="VARCHAR" />
+     <result column="companyName" property="companyName" jdbcType="VARCHAR" />
+     <result column="contacts" property="contacts" jdbcType="VARCHAR" />
+     <result column="address" property="address" jdbcType="VARCHAR" />
+     <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+     <result column="email" property="email" jdbcType="VARCHAR" />
+     <result column="fax" property="fax" jdbcType="VARCHAR" />
+     <result column="logoPath" property="logoPath" jdbcType="VARCHAR" />
+     <result column="sn" property="sn" jdbcType="VARCHAR" />
+     <result column="signature" property="signature" jdbcType="VARCHAR" />
+     <result column="isTrial" property="isTrial" jdbcType="Integer" />
+     <result column="expiredDays" property="expiredDays" jdbcType="Integer" />
+     <result column="comments" property="comments" jdbcType="VARCHAR" />
+     <result column="createTime" property="createTime" jdbcType="VARCHAR" />
+   </resultMap>
+        
+    <insert id="addCustomization" parameterClass="customization">       
+       insert into ivt_customization(id,companyName,contacts,mobile,fax,address,email,logoPath,sn,signature,isTrial,expiredDays,comments,createTime) 
+       values (1,#companyName#,#contacts#,#mobile#,#fax#,#address#,#email#,#logoPath#,#sn#,#signature#,#isTrial#,#expiredDays#,#comments#,#createTime#)
+    </insert>
+    <update id="updateCustomization" parameterClass="customization">       
+       update ivt_customization set companyName=#companyName#,contacts=#contacts#,mobile=#mobile#,fax=#fax#,address=#address#,email=#email#,logoPath=#logoPath#,
+       sn=#sn#,signature=#signature#,isTrial=#isTrial#,expiredDays=#expiredDays#,comments=#comments#,createTime=#createTime#  where id=1       
+    </update>
+    <update id="updateCustomizationExpiredDays">       
+       update ivt_customization set expiredDays=#value# where id=1       
+    </update>
+     <select id="findCustomization" resultMap="customizationMap">
+       select * from ivt_customization where id=1
+    </select>
+    <select id="countCustomization" resultClass="java.lang.Integer">
+	   select count(*) from ivt_customization
+    </select>
+ </sqlMap>

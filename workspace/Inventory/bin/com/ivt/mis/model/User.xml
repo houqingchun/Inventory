@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap>
+	<typeAlias type="com.ivt.mis.model.User" alias="user" />
+	<resultMap id="userMap" class="user">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="loginname" property="loginName" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="power" property="power" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="Integer" />
+		<result column="available" property="available" jdbcType="Integer" />
+		<result column="createTime" property="createTime" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<insert id="addUser" parameterClass="user">
+		insert into ivt_user(id,loginname,password,name,power,version,available,createTime)
+		values (#id#,#loginName#,#password#,#name#,#power#,1,1,#createTime#)
+	</insert>
+	<update id="updatePassword" parameterClass="java.util.Map">
+		update ivt_user set password=#password#,version=version+1 where loginname=#loginName#
+	</update>
+	<update id="deleteUser">
+		update ivt_user set available=0,version=version+1 where loginname=#loginName#
+	</update>
+	<select id="searchUserByType" resultMap="userMap">
+		select * from ivt_user where power=#value# and available=1
+	</select>
+	<select id="countUserByLoginName" resultClass="java.lang.Integer">
+		select count(*) from ivt_user where upper(loginName)=upper(#value#)
+	</select>
+	<select id="loginCheck" resultClass="java.lang.Integer"
+		parameterClass="java.util.Map">
+		select count(*) from ivt_user where upper(loginName)=upper(#loginName#) and
+		password=#password# and available=1
+	</select>
+	<select id="findUserById" resultMap="userMap">
+		select * from ivt_user where upper(loginName)=upper(#value#) and available=1
+	</select>
+</sqlMap>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap>
+	<typeAlias type="com.ivt.mis.model.DataVersion" alias="dataVersion" />
+	<resultMap id="dataVersionMap" class="dataVersion">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="dataPath" property="dataPath" jdbcType="VARCHAR" />
+		<result column="dataType" property="dataPath" jdbcType="VARCHAR" />
+		<result column="comments" property="comments" jdbcType="VARCHAR" />
+		<result column="createTime" property="createTime" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="Integer" />
+	</resultMap>
+
+	<insert id="addDataVersion" parameterClass="dataVersion">
+		insert into ivt_dataVersion(id,dataPath,dataType,comments,createTime,version)
+		values (#id#,#dataPath#,#dataType#,#comments#,#createTime#,1)
+	</insert>
+	<delete id="deleteDataVersionById">
+		delete from ivt_dataVersion where id=#value#
+	</delete>	
+	<select id="findDataVersionById" resultMap="dataVersionMap">
+		select * from ivt_dataVersion where id=#value#
+	</select>
+	<select id="searchAllDataVersions" resultMap="dataVersionMap">
+		select * from ivt_dataVersion order by createTime desc
+	</select>
+</sqlMap>

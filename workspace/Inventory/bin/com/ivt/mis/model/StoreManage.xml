@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap>
+	<typeAlias type="com.ivt.mis.model.StoreManage" alias="storeManage" />
+   <typeAlias type="com.ivt.mis.model.Product" alias="product"/>
+   
+	<resultMap id="storeManageMap" class="storeManage">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="productId" property="productId" jdbcType="VARCHAR" />
+		<result column="productCode" property="productCode" jdbcType="VARCHAR" />
+		<result column="productBrand" property="productBrand" jdbcType="VARCHAR" />
+		<result column="storeProcurementId" property="storeProcurementId" jdbcType="VARCHAR" />
+		<result column="totalNbr" property="totalNbr" jdbcType="Integer" />
+		<result column="version" property="version" jdbcType="Integer" />
+	</resultMap>
+
+	<insert id="addStoreManage" parameterClass="storeManage">
+		insert into ivt_storemanage(id,productId,productCode,productBrand,storeProcurementId,totalNbr,version)
+		values(#id#,#productId#,#productCode#,#productBrand#,#storeProcurementId#,#totalNbr#,1)
+	</insert>
+	<update id="updateStoreTotalQty" parameterClass="storeManage">
+		update ivt_storemanage set totalNbr=totalNbr+#totalNbr#,version=version+1 where
+		storeProcurementId=#storeProcurementId#
+	</update>
+	<update id="resetStoreManageTotalNbr" parameterClass="storeManage">
+		update ivt_storemanage set totalNbr=#totalNbr#,version=version+1 where
+		storeProcurementId=#storeProcurementId#
+	</update>
+	
+	 <update id="updateProductInfoForStoreManager" parameterClass="product">       
+       update ivt_storemanage set productBrand=#brand#,productCode=#productCode# where productId=#id#
+    </update>
+	
+	<select id="searchAllStoreManages" resultMap="storeManageMap">
+		select * from ivt_storemanage
+	</select>
+	<select id="searchStoreManagesByProperties" resultMap="storeManageMap" parameterClass="storeManage">
+       select * from ivt_storemanage
+       <dynamic prepend="where">
+           <isNotEmpty prepend="and" property="productId">
+               (upper(productId) like upper('%$productId$%'))
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="productCode">
+               (upper(productCode) like upper('%$productCode$%'))
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="productBrand">
+               (upper(productBrand) like upper('%$productBrand$%'))
+           </isNotEmpty>
+            <isNotEmpty prepend="and" property="storeProcurementId">
+               (upper(storeProcurementId) like upper('%$storeProcurementId$%'))
+           </isNotEmpty>
+       </dynamic>
+       order by storeProcurementId
+       limit #page.fromIndex#,#page.pageSize#
+    </select>
+    <select id="searchStoreManagesByPropertiesCount" resultClass="java.lang.Integer" parameterClass="storeManage">
+       select count(*) from ivt_storemanage
+       <dynamic prepend="where">
+           <isNotEmpty prepend="and" property="productId">
+               (upper(productId) like upper('%$productId$%'))
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="productCode">
+               (upper(productCode) like upper('%$productCode$%'))
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="productBrand">
+               (upper(productBrand) like upper('%$productBrand$%'))
+           </isNotEmpty>
+            <isNotEmpty prepend="and" property="storeProcurementId">
+               (upper(storeProcurementId) like upper('%$storeProcurementId$%'))
+           </isNotEmpty>
+       </dynamic>
+    </select>
+	 <select id="countStoreManageByStoreProcurementId" resultClass="java.lang.Integer">
+	   select count(*) from ivt_storemanage where storeProcurementId=#value#
+    </select>
+    <delete id="cleanStoreManager">
+       delete from ivt_storemanage where totalNbr = 0
+    </delete>
+</sqlMap>

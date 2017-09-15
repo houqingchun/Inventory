@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap>
+	<typeAlias type="com.ivt.mis.model.Provider" alias="provider" />
+	<resultMap id="providerCodeMap" class="provider">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="providerMap" class="provider">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="zip" property="zip" jdbcType="VARCHAR" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="shipaddress" property="shipAddress" jdbcType="VARCHAR" />
+		<result column="telephone" property="telephone" jdbcType="VARCHAR" />
+		<result column="contacts" property="contacts" jdbcType="VARCHAR" />
+		<result column="mobile" property="mobile" jdbcType="VARCHAR" />
+		<result column="bank" property="bank" jdbcType="VARCHAR" />
+		<result column="account" property="account" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="fax" property="fax" jdbcType="VARCHAR" />
+		<result column="registryplace" property="registryPlace"
+			jdbcType="VARCHAR" />
+		<result column="registryNumber" property="registryNumber"
+			jdbcType="VARCHAR" />
+		<result column="registrytype" property="registryType" jdbcType="VARCHAR" />
+		<result column="levelState" property="levelState" jdbcType="VARCHAR" />
+		<result column="ownerid" property="ownerId" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="Integer" />
+		<result column="createTime" property="createTime" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<insert id="addProvider" parameterClass="provider">
+		insert into
+		ivt_provider(id,name,zip,address,telephone,contacts,mobile,bank,account,email,fax,registryplace,registrynumber,registrytype,ownerid,shipaddress,levelState,available,version,createTime)
+		values
+		(#id#,#name#,#zip#,#address#,#telephone#,#contacts#,#mobile#,#bank#,#account#,#email#,#fax#,#registryPlace#,#registryNumber#,#registryType#,#ownerId#,#shipAddress#,#levelState#,1,1,#createTime#)
+	</insert>
+	<update id="updateProvider" parameterClass="provider">
+		update ivt_provider set
+		name=#name#,version=version+1,zip=#zip#,address=#address#,telephone=#telephone#,contacts=#contacts#,mobile=#mobile#,bank=#bank#,levelState=#levelState#,
+		account=#account#,email=#email#,fax=#fax#,registryplace=#registryPlace#,registrynumber=#registryNumber#,registrytype=#registryType#,ownerid=#ownerId#,shipaddress=#shipAddress#
+		where id=#id#
+	</update>
+	<update id="deleteProviderById">
+		update ivt_provider set available=0,version=version+1 where id=#value#
+	</update>
+	<select id="searchAllProviders" resultMap="providerMap">
+		select * from ivt_provider where available!=0
+	</select>
+	<select id="searchAllProviderCodes" resultMap="providerCodeMap">
+		select id from ivt_provider where available!=0
+	</select>
+	
+	<select id="searchProviderByProperties" resultMap="providerMap"
+		parameterClass="provider">
+		select * from ivt_provider
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="contacts">
+				(upper(contacts) like upper('%$contacts$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="name">
+				(upper(name) like upper('%$name$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="id">
+				(upper(id) like upper('%$id$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="available">
+				(available!=0)
+			</isNotEmpty>
+		</dynamic>
+		order by createTime desc
+		limit #page.fromIndex#,#page.pageSize#
+	</select>
+	<select id="searchProviderByPropertiesCount" resultClass="java.lang.Integer"
+		parameterClass="provider">
+		select count(*) from ivt_provider
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="contacts">
+				(upper(contacts) like upper('%$contacts$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="name">
+				(upper(name) like upper('%$name$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="id">
+				(upper(id) like upper('%$id$%') )
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="available">
+				(available!=0)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="findProviderById" resultMap="providerMap">
+		select * from ivt_provider where available!=0 and id=#value#
+	</select>
+</sqlMap>

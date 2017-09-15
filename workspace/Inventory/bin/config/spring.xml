@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd	
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
+	default-autowire="byName">
+
+
+	<bean id="userDAO" class="com.ivt.mis.dao.UserDAO">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	<bean id="customerDAO" class="com.ivt.mis.dao.CustomerDAO">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	<bean id="customizationDAO" class="com.ivt.mis.dao.CustomizationDAO">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	
+	<bean id="productDAO" class="com.ivt.mis.dao.ProductDAO">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	<bean id="storeManageDAO" class="com.ivt.mis.dao.StoreManageDAO">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	<bean id="storeProcurementDAO" class="com.ivt.mis.dao.StoreProcurementDAO">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	<bean id="providerDAO" class="com.ivt.mis.dao.ProviderDAO">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	<bean id="storeShipmentDAO" class="com.ivt.mis.dao.StoreShipmentDAO">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	<bean id="dataVersionDAO" class="com.ivt.mis.dao.DataVersionDAO">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	<bean id="codeRuleDAO" class="com.ivt.mis.dao.CodeRuleDAO">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	<bean id="purchaseOrderDAO" class="com.ivt.mis.dao.PurchaseOrderDAO">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	
+	<bean id="userService" class="com.ivt.mis.service.impl.UserServiceImpl"></bean>
+	<bean id="customerService" class="com.ivt.mis.service.impl.CustomerServiceImpl"></bean>
+	<bean id="productService" class="com.ivt.mis.service.impl.ProductServiceImpl"></bean>
+	<bean id="providerService" class="com.ivt.mis.service.impl.ProviderServiceImpl"></bean>
+	<bean id="storeManageService" class="com.ivt.mis.service.impl.StoreManageServiceImpl"></bean>
+	<bean id="storeProcurementService" class="com.ivt.mis.service.impl.StoreProcurementServiceImpl"></bean>
+	<bean id="storeShipmentService" class="com.ivt.mis.service.impl.StoreShipmentServiceImpl"></bean>
+	<bean id="customizationService" class="com.ivt.mis.service.impl.CustomizationServiceImpl"></bean>
+	<bean id="dataVersionService" class="com.ivt.mis.service.impl.DataVersionServiceImpl"></bean>
+	<bean id="codeRuleService" class="com.ivt.mis.service.impl.CodeRuleServiceImpl"></bean>
+	<bean id="purchaseOrderService" class="com.ivt.mis.service.impl.PurchaseOrderServiceImpl"></bean>
+	
+
+	<!-- <context:component-scan base-package="com.ivt.mis"> <context:include-filter 
+		type="regex" expression=".service.*" /> <context:include-filter type="regex" 
+		expression=".dao.*" /> </context:component-scan> <tx:annotation-driven transaction-manager="transactionManager" 
+		/> <context:annotation-config /> <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" 
+		/> -->
+
+	<context:property-placeholder location="db.properties" />
+
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="classpath:config/ibatis_config.xml" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- <bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate"> 
+		<property name="sqlMapClient" ref="sqlMapClient" /> </bean> -->
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${DBdriver}" />
+		<property name="url" value="${DBurl}" />
+		<property name="username" value="${DBuser}" />
+		<property name="password" value="${DBpassword}" />
+		<property name="initialSize" value="${initialSize}"></property>
+		<property name="maxActive" value="${maxActive}"></property>
+		<property name="maxIdle" value="${maxIdle}"></property>
+		<property name="minIdle" value="${minIdle}"></property>
+	</bean>
+
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 配置事务特性 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 配置哪些类的方法需要加事务 -->
+	<aop:config>
+		<aop:pointcut id="txServiceOperation"
+			expression="execution(* com.ivt.mis.service..*(..))" />
+		<aop:advisor pointcut-ref="txServiceOperation" advice-ref="txAdvice" />
+	</aop:config>
+</beans>

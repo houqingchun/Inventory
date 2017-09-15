@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+ <sqlMap >
+   <typeAlias type="com.ivt.mis.model.StoreProcurement" alias="storeProcurement"/>
+   <typeAlias type="com.ivt.mis.model.Product" alias="product"/>
+   <typeAlias type="com.ivt.mis.model.Provider" alias="provider"/>
+   <typeAlias type="com.ivt.mis.model.Customer" alias="customer"/>
+   
+   <resultMap id="storeProcurementMap" class="storeProcurement" >
+     <result column="id" property="id" jdbcType="VARCHAR" />
+     <result column="providerId" property="providerId" jdbcType="VARCHAR" />
+     <result column="providerName" property="providerName" jdbcType="VARCHAR" />
+     <result column="customerId" property="customerId" jdbcType="VARCHAR" />
+     <result column="customerName" property="customerName" jdbcType="VARCHAR" />
+     <result column="productId" property="productId" jdbcType="VARCHAR" />
+     <result column="productCode" property="productCode" jdbcType="VARCHAR" />
+     <result column="productName" property="productName" jdbcType="VARCHAR" />
+     <result column="productBrand" property="productBrand" jdbcType="VARCHAR" />
+     <result column="productId" property="productId" jdbcType="VARCHAR" />
+     <result column="providerName" property="providerName" jdbcType="VARCHAR" />
+     <result column="proNumber" property="proNumber" jdbcType="Integer" />
+     <result column="comment" property="comment" jdbcType="VARCHAR" />
+     <result column="pack" property="pack" jdbcType="VARCHAR" />
+     <result column="miniPack" property="miniPack" jdbcType="VARCHAR" />
+     <result column="proType" property="proType" jdbcType="VARCHAR" />
+     <result column="unit" property="unit" jdbcType="VARCHAR" />
+     <result column="currency" property="currency" jdbcType="VARCHAR" />
+     <result column="produceCode" property="produceCode" jdbcType="VARCHAR" />
+     <result column="purchaseCode" property="purchaseCode" jdbcType="VARCHAR" />
+     <result column="unitPrice" property="unitPrice" jdbcType="Double" />
+     <result column="userId" property="userId" jdbcType="VARCHAR" />
+     <result column="createTime" property="createTime" jdbcType="VARCHAR" />
+     <result column="dayCode" property="dayCode" jdbcType="VARCHAR" />
+     <result column="groupId" property="groupId" jdbcType="VARCHAR" />
+     <result column="produceTime" property="produceTime" jdbcType="VARCHAR" />
+     <result column="version" property="version" jdbcType="Integer" />
+   </resultMap>
+        
+    <insert id="addStoreProcurement" parameterClass="storeProcurement">       
+       insert into ivt_storeprocurement(id,groupId,providerid,providername,productid,productname,productBrand,customerid,
+       customername,pronumber,comment,pack,miniPack,proType,unit,currency,producecode,purchasecode,unitprice,userid,createtime,producetime,productCode,dayCode,version)  
+       values (#id#,#groupId#,#providerId#,#providerName#,#productId#,#productName#,#productBrand#,#customerId#,
+       #customerName#,#proNumber#,#comment#,#pack#,#miniPack#,#proType#,#unit#,#currency#,#produceCode#,#purchaseCode#,#unitPrice#,#userId#,#createTime#,#produceTime#,#productCode#,#dayCode#,1)
+    </insert>
+    <update id="updateStoreProcurement" parameterClass="storeProcurement">       
+       update ivt_storeprocurement set providerId=#providerId#,providerName=#providerName#,productBrand=#productBrand#,productId=#productId#,productCode=#productCode#,dayCode=#dayCode#,
+       productName=#productName#,customerId=#customerId#, customerName=#customerName#,proNumber=#proNumber#,comment=#comment#,
+       pack=#pack#,miniPack=#miniPack#,proType=#proType#,unit=#unit#,currency=#currency#,produceCode=#produceCode#,purchaseCode=#purchaseCode#,unitPrice=#unitPrice#,produceTime=#produceTime# where id=#id#
+    </update>
+    
+     <update id="updateProductInfoForProcurement" parameterClass="product">       
+       update ivt_storeprocurement set productBrand=#brand#,productCode=#productCode#,unit=#unit#, productName=#productName#,pack=#pack#,miniPack=#miniPack# where productId=#id#
+    </update>
+    
+     <update id="updateProviderInfoForProcurement" parameterClass="provider">       
+       update ivt_storeprocurement set providerName=#name# where providerId=#id#
+    </update>
+    
+     <update id="updateCustomerInfoForProcurement" parameterClass="customer">       
+       update ivt_storeprocurement set customerName=#name# where customerId=#id#
+    </update>
+    
+    <select id="searchAllStoreProcurements" resultMap="storeProcurementMap">       
+       select * from ivt_storeprocurement order by createTime desc
+    </select>
+    
+      <select id="findStoreProcurementById" resultMap="storeProcurementMap">       
+       select * from ivt_storeprocurement where id=#value#
+    </select>
+    <select id="countStoreProcurement" resultClass="java.lang.Integer">
+	   select count(*) from ivt_storeProcurement where id=#value#
+    </select>
+    <select id="searchStoreProcurementsByProperties" resultMap="storeProcurementMap" parameterClass="storeProcurement">
+       select * from ivt_storeprocurement
+       <dynamic prepend="where">
+           <isNotEmpty prepend="and" property="startTime">
+               (createtime BETWEEN #startTime# and #endTime#)
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="groupId">
+               (upper(groupId) like upper('%$groupId$%') )
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="productCode">
+               (upper(productCode) like upper('%$productCode$%') )
+           </isNotEmpty>
+            <isNotEmpty prepend="and" property="customerId">
+               (upper(customerId) like upper('%$customerId$%') )
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="userId">
+               (upper(userId) like upper('%$userId$%') )
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="providerId">
+               (upper(providerId) like upper('%$providerId$%') )
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="productBrand">
+               (upper(productBrand) like upper('%$productBrand$%') )
+           </isNotEmpty>
+       </dynamic> 
+       order by createTime desc
+       limit #page.fromIndex#,#page.pageSize#
+    </select>
+     <select id="searchStoreProcurementsByPropertiesCount" resultClass="java.lang.Integer"  parameterClass="storeProcurement">
+       select count(*) from ivt_storeprocurement
+       <dynamic prepend="where">
+           <isNotEmpty prepend="and" property="startTime">
+               (createtime BETWEEN #startTime# and #endTime#)
+           </isNotEmpty>
+             <isNotEmpty prepend="and" property="groupId">
+               (upper(groupId) like upper('%$groupId$%') )
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="productCode">
+               (upper(productCode) like upper('%$productCode$%') )
+           </isNotEmpty>
+            <isNotEmpty prepend="and" property="customerId">
+               (upper(customerId) like upper('%$customerId$%') )
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="userId">
+               (upper(userId) like upper('%$userId$%') )
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="providerId">
+               (upper(providerId) like upper('%$providerId$%') )
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="productBrand">
+               (upper(productBrand) like upper('%$productBrand$%') )
+           </isNotEmpty>
+       </dynamic> 
+    </select>
+ </sqlMap>

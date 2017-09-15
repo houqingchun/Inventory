@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+    <sqlMap resource="com/ivt/mis/model/Provider.xml" />
+    <sqlMap resource="com/ivt/mis/model/Customer.xml" />
+    <sqlMap resource="com/ivt/mis/model/Product.xml" />
+    <sqlMap resource="com/ivt/mis/model/StoreShipment.xml" />
+    <sqlMap resource="com/ivt/mis/model/StoreProcurement.xml" />
+    <sqlMap resource="com/ivt/mis/model/User.xml" />
+    <sqlMap resource="com/ivt/mis/model/StoreManage.xml" />
+    <sqlMap resource="com/ivt/mis/model/Customization.xml" />
+    <sqlMap resource="com/ivt/mis/model/DataVersion.xml" />
+    <sqlMap resource="com/ivt/mis/model/CodeRule.xml" />
+    <sqlMap resource="com/ivt/mis/model/PurchaseOrder.xml" />
+    <sqlMap resource="com/ivt/mis/model/PurchaseOrderItem.xml" />
+</sqlMapConfig>

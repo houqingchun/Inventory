@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap>
+	<typeAlias type="com.ivt.mis.model.CodeRule" alias="codeRule" />
+	<resultMap id="codeRuleMap" class="codeRule">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="objectType" property="objectType" jdbcType="VARCHAR" />
+		<result column="objectName" property="objectName" jdbcType="VARCHAR" />
+		<result column="available" property="available" jdbcType="BOOLEAN" />
+		<result column="autoIncrease" property="autoIncrease" jdbcType="BOOLEAN" />
+		<result column="prefixEnabled" property="prefixEnabled"
+			jdbcType="BOOLEAN" />
+		<result column="suffixEanbled" property="suffixEanbled"
+			jdbcType="BOOLEAN" />
+		<result column="prefix" property="prefix" jdbcType="VARCHAR" />
+		<result column="suffix" property="suffix" jdbcType="VARCHAR" />
+		<result column="nbrOfSeq" property="nbrOfSeq" jdbcType="Integer" />
+		<result column="seqType" property="seqType" jdbcType="VARCHAR" />
+		<result column="seqFormat" property="seqFormat" jdbcType="VARCHAR" />
+		<result column="currentSeq" property="currentSeq" jdbcType="VARCHAR" />
+		<result column="comments" property="comments" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="Integer" />
+	</resultMap>
+
+	<insert id="addCodeRule" parameterClass="codeRule">
+		insert into	ivt_code_rule(id,objectType,objectName,available,autoIncrease,prefixEnabled,suffixEanbled,prefix,suffix,nbrOfSeq,seqType,seqFormat,currentSeq,comments,createTime,version) 
+		values (#id#,#objectType#,#objectName#,#available#,#autoIncrease#,#prefixEnabled#,#suffixEanbled#,#prefix#,#suffix#,#nbrOfSeq#,#seqType#,#seqFormat#,#currentSeq#,#comments#,#createTime#,1)
+	</insert>
+	<update id="updateCodeRule" parameterClass="codeRule">
+		update ivt_code_rule
+		set	objectType=#objectType#,objectName=#objectName#,available=#available#,autoIncrease=#autoIncrease#,prefixEnabled=#prefixEnabled#,suffixEanbled=#suffixEanbled#,prefix=#prefix#,
+		suffix=#suffix#,nbrOfSeq=#nbrOfSeq#,seqType=#seqType#,seqFormat=#seqFormat#,currentSeq=#currentSeq#,comments=#comments#,version=version+1 
+		where id=#id#
+	</update>
+	<update id="updateCurrentSeq" parameterClass="codeRule">
+		update ivt_code_rule set	currentSeq=#currentSeq#	where id=#id#
+	</update>
+	<delete id="deleteCodeRuleById">
+		delete from ivt_code_rule where id=#value#
+	</delete>
+	<update id="updateCodeRuleSeq" parameterClass="codeRule">
+		update
+		ivt_code_rule set
+		currentSeq=#currentSeq#,version=version+1 where
+		id=#id#
+	</update>
+	<select id="searchCodeRuleByProperties" resultMap="codeRuleMap"
+		parameterClass="codeRule">
+		select * from ivt_code_rule limit
+		#page.fromIndex#,#page.pageSize#
+	</select>
+	<select id="searchCodeRuleByPropertiesCount" resultClass="java.lang.Integer"
+		parameterClass="codeRule">
+		select count(*) from ivt_code_rule
+	</select>
+	<select id="searchCodeRuleByObjectType" resultMap="codeRuleMap">
+		select * from
+		ivt_code_rule where objectType=#value#
+	</select>
+
+	<select id="countCodeRuleByObjectType" resultClass="java.lang.Integer">
+		select
+		count(*) from
+		ivt_code_rule where objectType=#value#
+	</select>
+	<select id="findCodeRuleById" resultMap="codeRuleMap">
+		select * from
+		ivt_code_rule where id=#value#
+	</select>
+</sqlMap>
